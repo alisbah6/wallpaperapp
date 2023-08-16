@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'route.dart';
 class AddressPage extends StatefulWidget{
@@ -15,14 +14,7 @@ class _AddressPageState extends State<AddressPage> {
   bool? isChecked1=false;
   bool? isChecked2=false;
 
-
-  final _formkey = GlobalKey<FormState>();
-
-  movetohome(BuildContext context){
-    if(_formkey.currentState!.validate()) {
-      Navigator.pushNamed(context, MyRoutes.homeRoute);
-    }
-  }
+  int? num=0;
 
   @override
   Widget build (BuildContext context){
@@ -32,7 +24,6 @@ class _AddressPageState extends State<AddressPage> {
       ),
       body: SingleChildScrollView(
         child:Form(
-          key: _formkey,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -61,7 +52,12 @@ class _AddressPageState extends State<AddressPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(3.0),
-                  child: TextField(controller:_pincode,decoration: InputDecoration(enabledBorder:OutlineInputBorder(borderSide:BorderSide(width:1,color: Colors.black ) ))),
+                  child: TextFormField(controller:_pincode,decoration: InputDecoration(enabledBorder:OutlineInputBorder(borderSide:BorderSide(width:1,color: Colors.black ) ))
+                      ,validator:(_number){
+                bool _ans=_number!.length<6&&_number!.contains(RegExp(r"^[1-9]{1}[0-9]{2}\\s{0, 1}[0-9]{3}$"));
+                return _ans?null:"Please enter a valid pincode";
+                })
+                  ,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -69,7 +65,11 @@ class _AddressPageState extends State<AddressPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(3.0),
-                  child: TextField(controller:_number,decoration: InputDecoration(enabledBorder:OutlineInputBorder(borderSide:BorderSide(width:1,color: Colors.black ) ))),
+                  child: TextFormField(controller:_number,decoration: InputDecoration(enabledBorder:OutlineInputBorder(borderSide:BorderSide(width:1,color: Colors.black )))
+                  ,validator:(_number){
+                    bool _ans=_number!.length<10&&_number!.contains(RegExp(r"^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$"));
+                    return _ans?null:"Please enter a valid phone number";
+                }),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 15, 8, 0),
@@ -104,7 +104,6 @@ class _AddressPageState extends State<AddressPage> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(3, 28, 8,28),
                         child: ElevatedButton(onPressed: (){
-                          CollectionReference collRef=FirebaseFirestore.instance.collection("useradd");
                           Navigator.pushNamed(context,MyRoutes.paymentRoutes);
                         }, child: Text("Confirm Address",style: TextStyle(fontSize: 20),)),
                       ),
